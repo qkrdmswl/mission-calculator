@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 var app = express();
 
 var corOptions = {
-    origin: "http://localhost:8080",
+    origin: "http://localhost:3000",
 };
 
 const limiter = rateLimit({
