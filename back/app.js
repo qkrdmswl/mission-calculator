@@ -14,32 +14,27 @@ var corOptions = {
 
 const limiter = rateLimit({
   max: 9, // limit each IP to 100 requests
-  handler: function (req, res) {
-		res.status(400).json({
-			code: 400,
-			message: "You requested 10 times. Try it later again please."
-		}),
-    console.log(req.rateLimit.current);
-    req.rateLimit.remaining = 9;
-    console.log(req.rateLimit.current);
+  onLimitReached: (req, res, options) => {
+    // Reset the calling count for the current IP address
+    limiter.resetKey(req.ip);
+  },
+  handler: function (req, res, next) {
+		res.status(400).send("You requested 10 times. Try it later again please.");
   }
 });
 
-app.use(limiter)
-app.use('/', indexRouter);
+app.use(limiter);
+app.use("/", indexRouter);
+// app.use('/', (req, res) => {
+//   if (req.rateLimit.remaining >= 0) {
+//     res.send('OK');
+//   }
+// },indexRouter);
 app.use(cors(corOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use((err, req, res, next) => {
-  if (err.name === 'RateLimitExceeded') {
-    console.log("!")
-  }
-  else {
-    next();
-  }
-})
- 
+
 app.set("port", 3000);
 
 
