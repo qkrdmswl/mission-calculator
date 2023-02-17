@@ -30,11 +30,9 @@ const Calculator = () => {
       );
       setOperCheck(true);
     }
-    console.log(e.target.value);
   };
 
   const getOper = (e) => {
-    console.log(e.target.outerText);
     if (operCheck) {
       setCalc((prev) => prev + e.target.outerText);
       setOperCheck(false);
@@ -53,7 +51,6 @@ const Calculator = () => {
     } else {
       setCalc((prev) => eval(replace_str));
       const result = parseInt(eval(replace_str))
-      console.log(result)
       axios.post(`http://localhost:8080/api/${result}/`);
     }
   };
